@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- GitHub Avatar version - Square format with padding -->
+  
+  <!-- Background circle for better visibility -->
+  <circle cx="32" cy="32" r="30" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Shield background -->
+  <path d="M32 12 L47 17 L47 29 C47 37 32 45 32 45 C32 45 17 37 17 29 L17 17 L32 12 Z" fill="#22c55e" stroke="none"/>
+  
+  <!-- Receipt/document lines inside shield -->
+  <rect x="24" y="21" width="16" height="1.8" fill="white" opacity="0.9"/>
+  <rect x="24" y="24.5" width="12" height="1.8" fill="white" opacity="0.7"/>
+  <rect x="24" y="28" width="14" height="1.8" fill="white" opacity="0.7"/>
+  
+  <!-- Checkmark -->
+  <path d="M27 32 L30 35 L37 28" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Subtle Stellar-inspired star element -->
+  <circle cx="42" cy="22" r="2.5" fill="#22c55e" opacity="0.6"/>
+  <path d="M42 19.5 L42.8 20.7 L44 20.7 L43.1 21.5 L43.4 22.7 L42 22.1 L40.6 22.7 L40.9 21.5 L40 20.7 L41.2 20.7 Z" fill="white" opacity="0.8"/>
+</svg>
