@@ -1,6 +1,6 @@
 # PayProof
 
-Verify Stellar transactions and generate shareable receipts.
+Create invoices, verify Stellar payments, and generate shareable receipts.
 
 **Live:** [payproof-five.vercel.app](https://payproof-five.vercel.app) &nbsp;·&nbsp;
 **CI:** ![CI](https://github.com/PayProofLabs/payproof/actions/workflows/ci.yml/badge.svg) &nbsp;·&nbsp;
@@ -22,11 +22,13 @@ I kept running into the same problem: someone would send a Stellar payment and t
 
 ## What it does
 
-Paste a Stellar transaction hash, choose mainnet or testnet, and PayProof fetches the transaction from the Horizon API and shows you the details — status, ledger, fee, payment operations (sender, receiver, amount, asset).
+PayProof has two main flows:
 
-From there you can generate a receipt page at a stable URL you can print, save as PDF, or share. The receipt includes a QR code that links back to the digital version.
+**Invoices** — create an invoice with a title, amount (XLM or USDC), and your Stellar address. Share the payment link with your client. They see how much to send, to which address, and which memo to include. When they pay, you click "Check for payment" and PayProof queries the Horizon API to confirm it.
 
-Everything runs in the browser. No backend, no data stored, no accounts.
+**Verification and receipts** — paste any Stellar transaction hash, choose mainnet or testnet, and PayProof fetches the details from the Horizon API — status, ledger, fee, payment operations (sender, receiver, amount, asset). From there you can generate a receipt page at a stable URL you can print, save as PDF, or share.
+
+Everything runs in the browser. No backend, no data stored server-side, no accounts.
 
 **Quick test** — paste this testnet hash on the live site:
 ```
@@ -39,6 +41,11 @@ Everything runs in the browser. No backend, no data stored, no accounts.
 
 | Feature | Status |
 |---|---|
+| Invoice creation (`/invoice/create`) | ✅ done |
+| Shareable invoice page (`/invoice/[id]`) | ✅ done |
+| Payment detection via Horizon API | ✅ done |
+| Invoice list (`/invoice`) | ✅ done |
+| USDC asset support | ⚠️ testnet only for now |
 | Transaction verification (mainnet + testnet) | ✅ done |
 | payment, path_payment_strict_receive, path_payment_strict_send | ✅ done |
 | Receipt pages at `/receipt/{hash}-{index}` | ✅ done |
