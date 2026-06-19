@@ -23,7 +23,13 @@ export function Navbar() {
             href="/verify"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
-            Verify Transaction
+            Verify
+          </Link>
+          <Link
+            href="/invoice"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Invoices
           </Link>
           <Link
             href="/docs"
@@ -32,7 +38,7 @@ export function Navbar() {
             Docs
           </Link>
           <Link
-            href="https://github.com/payproof/payproof"
+            href="https://github.com/PayProofLabs/payproof"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center text-sm font-medium transition-colors hover:text-primary"
@@ -45,10 +51,11 @@ export function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center space-x-4">
           <ThemeToggle />
+          <Button variant="outline" asChild>
+            <Link href="/invoice/create">Create Invoice</Link>
+          </Button>
           <Button asChild>
-            <Link href="/verify">
-              Verify Payment
-            </Link>
+            <Link href="/verify">Verify Payment</Link>
           </Button>
         </div>
 
@@ -77,7 +84,14 @@ export function Navbar() {
               className="block text-sm font-medium transition-colors hover:text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Verify Transaction
+              Verify
+            </Link>
+            <Link
+              href="/invoice"
+              className="block text-sm font-medium transition-colors hover:text-primary"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Invoices
             </Link>
             <Link
               href="/docs"
@@ -96,7 +110,12 @@ export function Navbar() {
               <Star className="mr-2 h-4 w-4" />
               GitHub
             </Link>
-            <div className="pt-4 border-t">
+            <div className="pt-4 border-t space-y-2">
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/invoice/create" onClick={() => setMobileMenuOpen(false)}>
+                  Create Invoice
+                </Link>
+              </Button>
               <Button className="w-full" asChild>
                 <Link href="/verify" onClick={() => setMobileMenuOpen(false)}>
                   Verify Payment
