@@ -46,6 +46,7 @@ Everything runs in the browser. No backend, no data stored server-side, no accou
 | Payment detection via Horizon API | ✅ done |
 | Invoice list (`/invoice`) | ✅ done |
 | USDC asset support | ⚠️ testnet only for now |
+| SEP-7 payment links | ✅ done |
 | Transaction verification (mainnet + testnet) | ✅ done |
 | payment, path_payment_strict_receive, path_payment_strict_send | ✅ done |
 | Receipt pages at `/receipt/{hash}-{index}` | ✅ done |
@@ -75,6 +76,13 @@ Browser
   │           ├── horizon.stellar.org          (mainnet)
   │           └── horizon-testnet.stellar.org  (testnet)
   │
+  ├── /invoice/[id]   Invoice view + payer view
+  │     │
+  │     ├── lib/sep7.ts (buildInvoiceSep7Uri)
+  │     │     └── components/pay-with-wallet-button.tsx
+  │     │
+  │     └── lib/invoices.ts (payment detection)
+  │
   └── /receipt/[id]   Parses {hash}-{operationIndex} from URL
         │
         └── components/receipt-card.tsx
@@ -87,7 +95,10 @@ Browser
 | File | What it does |
 |---|---|
 | `lib/stellar.ts` | Horizon queries, operation filtering, fee conversion |
-| `types/stellar.ts` | Shared TypeScript interfaces |
+| `lib/sep7.ts` | SEP-7 URI builder (`buildSep7PayUri`, `buildInvoiceSep7Uri`) |
+| `types/stellar.ts` | Shared TypeScript interfaces for Stellar types |
+| `types/sep7.ts` | SEP-7 types, network passphrases, USDC issuer constants |
+| `components/pay-with-wallet-button.tsx` | "Pay with Wallet" button that opens a SEP-7 URI |
 | `components/transaction-results.tsx` | Displays verification results |
 | `components/receipt-card.tsx` | Receipt layout, PDF export, QR code, share/print |
 | `components/receipt-qrcode.tsx` | Renders a QR code canvas from a URL |
@@ -118,6 +129,7 @@ npm run build        # production build
 npm run start        # serve production build
 npm run lint         # ESLint
 npm run type-check   # tsc --noEmit
+npm test             # run unit tests (vitest)
 ```
 
 ---

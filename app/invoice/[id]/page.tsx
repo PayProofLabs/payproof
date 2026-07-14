@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label"
 import { ReceiptQRCode } from "@/components/receipt-qrcode"
 import { getInvoice, updateInvoice, checkInvoicePayment } from "@/lib/invoices"
 import { stellarService } from "@/lib/stellar"
+import { buildInvoiceSep7Uri } from "@/lib/sep7"
+import { PayWithWalletButton } from "@/components/pay-with-wallet-button"
 import { useToast } from "@/hooks/use-toast"
 import type { Invoice } from "@/types/invoice"
 import { ArrowLeft, Copy, ExternalLink, Loader2, CheckCircle } from "lucide-react"
@@ -101,6 +103,10 @@ export default function InvoicePage() {
     ? `/receipt/${invoice.paidTxHash}-0?network=${invoice.network}`
     : null
 
+  // SEP-7 payment URI — null when the invoice data is invalid (should never
+  // happen in practice since invoices are validated on creation).
+  const sep7Uri = buildInvoiceSep7Uri(invoice)
+
   // ── PAYER VIEW ───────────────────────────────────────────────────────────
   if (isPayer) {
     return (
@@ -141,6 +147,12 @@ export default function InvoicePage() {
             <CardTitle className="text-base">How to pay</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {sep7Uri && invoice.status === "unpaid" && (
+              <div className="pb-2 border-b">
+                <PayWithWalletButton sep7Uri={sep7Uri} />
+              </div>
+            )}
+
             <div className="rounded-md bg-muted p-4 space-y-2 text-sm font-mono">
               <p><span className="text-muted-foreground">Send:</span> {invoice.amount} {invoice.asset}</p>
               <p className="break-all"><span className="text-muted-foreground">To:</span> {invoice.recipientAddress}</p>
