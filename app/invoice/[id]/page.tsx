@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -56,7 +56,7 @@ export default function InvoicePage() {
     if (inv) setInvoice(inv)
   }, [id])
 
-  const handleCheckPayment = async () => {
+  const handleCheckPayment = useCallback(async () => {
     if (!invoice) return
     setChecking(true)
     try {
@@ -65,13 +65,45 @@ export default function InvoicePage() {
         updateInvoice(invoice.id, { status: "paid", paidTxHash: txHash })
         refreshInvoice()
         toast({ title: "Payment detected", description: `Tx: ${txHash.slice(0, 16)}…` })
+        return true // payment found
       } else {
         toast({ title: "No payment found yet", description: "Try again in a moment" })
       }
     } finally {
       setChecking(false)
     }
-  }
+    return false
+  }, [invoice, refreshInvoice, toast])
+
+  // Auto-poll every 30 s on the sender view while the invoice is unpaid.
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    // Only poll on the sender view for unpaid invoices.
+    if (isPayer || !invoice || invoice.status !== "unpaid") return
+
+    const poll = async () => {
+      const found = await checkInvoicePayment(invoice)
+      if (found) {
+        updateInvoice(invoice.id, { status: "paid", paidTxHash: found })
+        refreshInvoice()
+        toast({ title: "Payment detected", description: `Tx: ${found.slice(0, 16)}…` })
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current)
+          pollingRef.current = null
+        }
+      }
+    }
+
+    pollingRef.current = setInterval(poll, 30_000)
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current)
+        pollingRef.current = null
+      }
+    }
+  }, [invoice, isPayer, refreshInvoice, toast])
 
   const handleManualVerify = async () => {
     if (!invoice || !manualHash.trim()) return
@@ -287,10 +319,16 @@ export default function InvoicePage() {
             <p className="text-sm text-muted-foreground">
               Waiting for payment of <strong>{invoice.amount} {invoice.asset}</strong> with memo <strong className="font-mono">{invoice.id}</strong>.
             </p>
-            <Button onClick={handleCheckPayment} disabled={checking}>
-              {checking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {checking ? "Checking…" : "Check for payment"}
-            </Button>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button onClick={handleCheckPayment} disabled={checking}>
+                {checking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {checking ? "Checking…" : "Check for payment"}
+              </Button>
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-yellow-400 animate-pulse" />
+                Auto-checking every 30 s
+              </span>
+            </div>
           </CardContent>
         </Card>
       )}
